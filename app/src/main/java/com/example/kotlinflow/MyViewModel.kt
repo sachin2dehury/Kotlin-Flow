@@ -28,6 +28,8 @@ class MyViewModel : ViewModel() {
 
     val hybridStateFlow =
         _sharedFlow.stateIn(viewModelScope + Dispatchers.IO, SharingStarted.Lazily, -1)
+//        _sharedFlow.stateIn(viewModelScope + Dispatchers.IO, SharingStarted.Eagerly, -1)
+//        _sharedFlow.stateIn(viewModelScope + Dispatchers.IO, SharingStarted.WhileSubscribed(5000), -1)
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
