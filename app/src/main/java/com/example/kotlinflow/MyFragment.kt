@@ -3,13 +3,13 @@ package com.example.kotlinflow
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.kotlinflow.databinding.FragmentMyBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.onEach
@@ -62,21 +62,30 @@ class MyFragment : Fragment(R.layout.fragment_my) {
                 }
             }
 
-            viewModel.sharedFlow.onEach {
-                Log.e("Flow_test", "onEach sharedFlow $it")
+            lifecycleScope.launch {
+                viewModel.sharedFlow.onEach {
+                    Log.e("Flow_test", "onEach sharedFlow $it")
+                }.stateIn(lifecycleScope)
             }
 
-            viewModel.stateFlow.onEach {
-                Log.e("Flow_test", "onEach stateFlow $it")
+            lifecycleScope.launch {
+                viewModel.stateFlow.onEach {
+                    Log.e("Flow_test", "onEach stateFlow $it")
+                    if (it == 5) {
+                        throw Exception()
+                    }
+                }.catch {
+                    Log.e("Flow_test", "catch block")
+                }.stateIn(lifecycleScope)
             }
 
             viewModel.sharedFlow.filter {
-                Log.e("Flow_test", "onEach sharedFlow $it")
+                Log.e("Flow_test", "filter sharedFlow $it")
                 true
             }
 
             viewModel.stateFlow.filter {
-                Log.e("Flow_test", "onEach stateFlow $it")
+                Log.e("Flow_test", "filter stateFlow $it")
                 true
             }
 
@@ -87,7 +96,11 @@ class MyFragment : Fragment(R.layout.fragment_my) {
             }
 
             lifecycleScope.launchWhenStarted {
-                viewModel.sharedFlow.stateIn(lifecycleScope + Dispatchers.IO, SharingStarted.Lazily, -1).collectLatest {
+                viewModel.sharedFlow.stateIn(
+                    lifecycleScope + Dispatchers.IO,
+                    SharingStarted.Lazily,
+                    -1
+                ).collectLatest {
                     Log.e("Flow_test", "launchWhenStarted hybridStateFlow from fragment $it")
                 }
             }
