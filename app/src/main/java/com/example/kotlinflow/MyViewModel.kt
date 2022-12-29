@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
@@ -36,7 +37,9 @@ class MyViewModel : ViewModel() {
             for (i in 0..20) {
                 delay(500)
                 _sharedFlow.emit(i)
+//                _sharedFlow.tryEmit(i)
                 _stateFlow.emit(i)
+//                _stateFlow.value = i
 //                _liveData.value = i
                 _liveData.postValue(i)
             }
