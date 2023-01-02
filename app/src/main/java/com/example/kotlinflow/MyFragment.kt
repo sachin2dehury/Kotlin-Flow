@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.example.kotlinflow.databinding.FragmentMyBinding
@@ -27,7 +27,7 @@ class MyFragment : Fragment(R.layout.fragment_my) {
 
     private var binding: FragmentMyBinding? = null
 
-    private val viewModel: MyViewModel by viewModels()
+    private val viewModel: MyViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -165,7 +165,7 @@ class MyFragment : Fragment(R.layout.fragment_my) {
         }
 
         lifecycleScope.launch {
-            viewModel.stateFlow.flowWithLifecycle(lifecycle).collect {
+            viewModel.sharedFlow.flowWithLifecycle(lifecycle).collect {
                 Log.e("Flow_test", "flowWithLifecycle $it")
             }
         }
