@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
@@ -42,6 +43,18 @@ class MyFragment : Fragment(R.layout.fragment_my) {
             }.collect {
                 delay(1000)
                 Log.e("Flow_test", "unbuffered flow $it")
+            }
+        }
+
+        lifecycleScope.launch {
+            flow {
+                for (i in 0..20) {
+                    delay(500)
+                    emit(i)
+                }
+            }.collectLatest {
+                delay(1000)
+                Log.e("Flow_test", "unbuffered flow collectLatest $it")
             }
         }
 
